@@ -4,11 +4,8 @@ def solve():
     with open('10/10.txt', 'r') as file:
         ans = 0
         for line in file:
-            global min_depth
-            diagram, buttons = parse(line)
-            state = 0
-            min_depth = f(state, diagram, buttons)
-            print(min_depth)
+            joltage, buttons, diagram = parse(line)
+            min_depth = f(0, diagram, buttons)
             ans += min_depth
             min_depth = math.inf
         return ans
@@ -30,30 +27,21 @@ def f(state, diagram, buttons):
         
 
 def parse(line):
-    diagram = 0
     buttons = []
-    button = []
-    in_diag = True
-    cnt = -1
-    for i in line:
-        cnt += 1
-        if i == '[' or i=='(' or i == ',' or i.strip()=='':
-            continue
-        if i == ']':
-            in_diag = False
-            continue
-        elif in_diag:
-            if i == '#':
-                diagram |= (1 << cnt-1)
-        elif i == '{':
-            break
-        elif i == '(':
-            continue
-        elif i == ')':
-            buttons.append(button)
-            button = []
-        else:
-            button.append(int(i))
-    return diagram, buttons
+    joltage = []
+    diagram = 0
+    A = line.strip().split()
+    for i in A:
+        if i[0] == '(':
+            buttons.append([int(x) for x in  i[1:-1].split(",")])
+        elif i[0] == '{':
+            joltage = i[1:-1].split(",")
+            return joltage, buttons, diagram
+        elif i[0]=='[':
+            cnt = 0
+            for j in i[1:-1]:
+                if j == '#':
+                    diagram |= (1 << cnt)
+                cnt += 1
 
 print(solve())
